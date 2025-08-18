@@ -115,7 +115,7 @@ const Hero = () => {
               <h3 className="text-white text-xl font-semibold mb-6">Proven Impact</h3>
               <div className="space-y-6">
                 <div>
-                  <div className="text-3xl font-bold text-white">200+</div>
+                  <div className="text-3xl font-bold text-white">50+</div>
                   <div className="text-neutral-200">Strategic Projects Delivered</div>
                 </div>
                 <div>

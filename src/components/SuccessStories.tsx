@@ -137,7 +137,7 @@ const SuccessStories = () => {
           </h3>
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <div className="text-4xl font-bold text-primary-foreground">200+</div>
+              <div className="text-4xl font-bold text-primary-foreground">50+</div>
               <div className="text-primary-foreground/80">Projects Completed</div>
             </div>
             <div>
