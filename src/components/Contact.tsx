@@ -45,8 +45,36 @@ const Contact = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     
+    // Validate all required fields
+    const requiredFields = {
+      firstName: 'First Name',
+      lastName: 'Last Name', 
+      email: 'Email Address',
+      subject: 'How can we help',
+      message: 'Message'
+    };
+
+    const emptyFields = [];
+    for (const [field, label] of Object.entries(requiredFields)) {
+      if (!formData[field as keyof typeof formData].trim()) {
+        emptyFields.push(label);
+      }
+    }
+
+    if (emptyFields.length > 0) {
+      alert(`Please fill in the following required fields:\n\n• ${emptyFields.join('\n• ')}`);
+      return;
+    }
+
     if (!consentChecked) {
       alert("Please accept the Consent Undertaking to proceed.");
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      alert("Please enter a valid email address.");
       return;
     }
 
@@ -318,7 +346,13 @@ ${formData.message}
                       variant="cta" 
                       size="lg" 
                       className="w-full group" 
-                      disabled={isSubmitting || !consentChecked}
+                      disabled={isSubmitting || !consentChecked || 
+                        !formData.firstName.trim() || 
+                        !formData.lastName.trim() || 
+                        !formData.email.trim() || 
+                        !formData.subject.trim() || 
+                        !formData.message.trim()
+                      }
                     >
                       {isSubmitting ? (
                         <>
