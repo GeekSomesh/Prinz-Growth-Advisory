@@ -12,6 +12,15 @@ import { usePopup } from "@/pages/Index";
 const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    company: '',
+    subject: '',
+    message: ''
+  });
   const { showPopup } = usePopup();
 
   const scrollToContact = () => {
@@ -25,13 +34,115 @@ const Contact = () => {
     }
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    
     if (!consentChecked) {
       alert("Please accept the Consent Undertaking to proceed.");
       return;
     }
-    setSubmitted(true);
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          access_key: '9a3bb822-499f-4cfa-9b56-a7f8a5cc7385',
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          subject: `New Business Inquiry from ${formData.firstName} ${formData.lastName} - ${formData.subject}`,
+          message: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏢 NEW BUSINESS INQUIRY - PRINZ ADVISORY GROUP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+👤 CONTACT INFORMATION:
+   • Name: ${formData.firstName} ${formData.lastName}
+   • Email: ${formData.email}
+   • Company: ${formData.company || 'Not specified'}
+
+📋 INQUIRY DETAILS:
+   • Subject: ${formData.subject}
+   • Priority: Business Consultation Request
+   • Date: ${new Date().toLocaleDateString('en-IN', {
+     weekday: 'long',
+     year: 'numeric',
+     month: 'long',
+     day: 'numeric',
+     timeZone: 'Asia/Kolkata'
+   })}
+   • Time: ${new Date().toLocaleTimeString('en-IN', {
+     hour: '2-digit',
+     minute: '2-digit',
+     timeZone: 'Asia/Kolkata'
+   })} IST
+
+💬 MESSAGE:
+${formData.message}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔒 CONSENT VERIFICATION:
+✅ The client has provided explicit consent for PAG to collect and process their personal and company information for business communication, advisory engagement, and professional services.
+
+📞 RECOMMENDED ACTIONS:
+1. Respond within 24 hours as per company policy
+2. Schedule initial consultation call
+3. Send company brochure and service overview
+4. Add contact to CRM system
+5. Assign to appropriate team member based on inquiry type
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌟 Prinz Advisory Group - Navigating Possibilities, Inspiring Growth
+📧 This inquiry was submitted via: prinzadvisory.online
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          `,
+          from_name: `${formData.firstName} ${formData.lastName}`,
+          reply_to: formData.email,
+          // Additional fields for better organization
+          company: formData.company || 'Not specified',
+          inquiry_type: formData.subject,
+          source: 'Website Contact Form - prinzadvisory.online',
+          consent_given: 'Yes - Explicit consent provided',
+          priority: 'Business Inquiry',
+          submission_date: new Date().toISOString()
+        })
+      });
+
+      if (response.ok) {
+        setSubmitted(true);
+        // Reset form
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          company: '',
+          subject: '',
+          message: ''
+        });
+        setConsentChecked(false);
+      } else {
+        throw new Error('Failed to submit form');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('There was an error sending your message. Please try again or contact us directly at pagsec.in@gmail.com');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -78,7 +189,18 @@ const Contact = () => {
                   </div>
                   <Button 
                     variant="outline" 
-                    onClick={() => setSubmitted(false)}
+                    onClick={() => {
+                      setSubmitted(false);
+                      setFormData({
+                        firstName: '',
+                        lastName: '',
+                        email: '',
+                        company: '',
+                        subject: '',
+                        message: ''
+                      });
+                      setConsentChecked(false);
+                    }}
                     className="mt-6"
                   >
                     Send Another Message
@@ -99,36 +221,75 @@ const Contact = () => {
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="firstName">First Name</Label>
-                        <Input id="firstName" placeholder="Your first name" />
+                        <Label htmlFor="firstName">First Name *</Label>
+                        <Input 
+                          id="firstName" 
+                          name="firstName"
+                          value={formData.firstName}
+                          onChange={handleInputChange}
+                          placeholder="Your first name" 
+                          required
+                        />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="lastName">Last Name</Label>
-                        <Input id="lastName" placeholder="Your last name" />
+                        <Label htmlFor="lastName">Last Name *</Label>
+                        <Input 
+                          id="lastName" 
+                          name="lastName"
+                          value={formData.lastName}
+                          onChange={handleInputChange}
+                          placeholder="Your last name" 
+                          required
+                        />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email Address</Label>
-                      <Input id="email" type="email" placeholder="your.email@company.com" />
+                      <Label htmlFor="email">Email Address *</Label>
+                      <Input 
+                        id="email" 
+                        name="email"
+                        type="email" 
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        placeholder="your.email@company.com" 
+                        required
+                      />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="company">Company/Organization</Label>
-                      <Input id="company" placeholder="Your company name" />
+                      <Input 
+                        id="company" 
+                        name="company"
+                        value={formData.company}
+                        onChange={handleInputChange}
+                        placeholder="Your company name" 
+                      />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="subject">How can we help?</Label>
-                      <Input id="subject" placeholder="Brief description of your needs" />
+                      <Label htmlFor="subject">How can we help? *</Label>
+                      <Input 
+                        id="subject" 
+                        name="subject"
+                        value={formData.subject}
+                        onChange={handleInputChange}
+                        placeholder="Brief description of your needs" 
+                        required
+                      />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="message">Message</Label>
+                      <Label htmlFor="message">Message *</Label>
                       <Textarea 
                         id="message" 
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
                         placeholder="Tell us more about your challenges, goals, and how we can support your transformation journey..." 
                         rows={5}
+                        required
                       />
                     </div>
 
@@ -157,10 +318,19 @@ const Contact = () => {
                       variant="cta" 
                       size="lg" 
                       className="w-full group" 
-                      disabled={submitted || !consentChecked}
+                      disabled={isSubmitting || !consentChecked}
                     >
-                      Send Message
-                      <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      {isSubmitting ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Sending Message...
+                        </>
+                      ) : (
+                        <>
+                          Send Message
+                          <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        </>
+                      )}
                     </Button>
                   </form>
                 </CardContent>
