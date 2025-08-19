@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Mail, MapPin, Globe, Send, CheckCircle } from "lucide-react";
 import { useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -10,6 +11,7 @@ import { usePopup } from "@/pages/Index";
 
 const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
   const { showPopup } = usePopup();
 
   const scrollToContact = () => {
@@ -25,6 +27,10 @@ const Contact = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!consentChecked) {
+      alert("Please accept the Consent Undertaking to proceed.");
+      return;
+    }
     setSubmitted(true);
   };
 
@@ -126,7 +132,33 @@ const Contact = () => {
                       />
                     </div>
 
-                    <Button type="submit" variant="cta" size="lg" className="w-full group" disabled={submitted}>
+                    {/* Consent Undertaking Checkbox */}
+                    <div className="space-y-4">
+                      <div className="flex items-start space-x-3">
+                        <Checkbox 
+                          id="consent" 
+                          checked={consentChecked}
+                          onCheckedChange={(checked) => setConsentChecked(checked as boolean)}
+                          className="mt-1"
+                        />
+                        <div className="flex-1">
+                          <Label htmlFor="consent" className="text-sm font-medium cursor-pointer">
+                            Consent Undertaking:
+                          </Label>
+                          <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                            I, hereby consent to Prinz Advisory Group (PAG) collecting and processing my personal and company information for the purposes of business communication, advisory engagement, and related professional services. I understand that my data will be used only for legitimate business purposes, and that I retain the right to access, correct, or request deletion of my data, as well as to withdraw my consent at any time by contacting PAG.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <Button 
+                      type="submit" 
+                      variant="cta" 
+                      size="lg" 
+                      className="w-full group" 
+                      disabled={submitted || !consentChecked}
+                    >
                       Send Message
                       <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </Button>
@@ -172,7 +204,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-foreground">Website</h4>
-                    <p className="text-muted-foreground">Coming Soon</p>
+                    <p className="text-muted-foreground">prinzadvisory.online</p>
                   </div>
                 </div>
               </CardContent>
