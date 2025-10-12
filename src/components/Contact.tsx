@@ -88,7 +88,7 @@ const Contact = () => {
           'Accept': 'application/json'
         },
         body: JSON.stringify({
-          access_key: '9a3bb822-499f-4cfa-9b56-a7f8a5cc7385',
+          access_key: '82acf37f-29b9-48c7-8f73-c72d286a5399',
           name: `${formData.firstName} ${formData.lastName}`,
           email: formData.email,
           subject: `New Business Inquiry from ${formData.firstName} ${formData.lastName} - ${formData.subject}`,
@@ -167,7 +167,7 @@ ${formData.message}
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert('There was an error sending your message. Please try again or contact us directly at pagsec.in@gmail.com');
+      alert('There was an error sending your message. Please try again or contact us directly at contact@prinzadvisory.online');
     } finally {
       setIsSubmitting(false);
     }
@@ -388,7 +388,7 @@ ${formData.message}
                   </div>
                   <div>
                     <h4 className="font-semibold text-foreground">Email</h4>
-                    <p className="text-muted-foreground">pagsec.in@gmail.com</p>
+                    <p className="text-muted-foreground">contact@prinzadvisory.online</p>
                   </div>
                 </div>
 
