@@ -28,7 +28,7 @@ const Footer = () => {
               <div className="space-y-4">
                 <div className="flex items-center space-x-2">
                   <Mail className="h-4 w-4" />
-                  <span className="text-primary-foreground/80">contact@prinzadvisory.online</span>
+                  <span className="text-primary-foreground/80">contact@prinzadvisory.co.in</span>
                 </div>
                 <div>
                   <p className="text-primary-foreground/80 text-sm mb-3">Follow us on:</p>

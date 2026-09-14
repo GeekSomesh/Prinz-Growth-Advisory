@@ -167,7 +167,7 @@ ${formData.message}
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert('There was an error sending your message. Please try again or contact us directly at contact@prinzadvisory.online');
+      alert('There was an error sending your message. Please try again or contact us directly at contact@prinzadvisory.co.in');
     } finally {
       setIsSubmitting(false);
     }
@@ -388,7 +388,7 @@ ${formData.message}
                   </div>
                   <div>
                     <h4 className="font-semibold text-foreground">Email</h4>
-                    <p className="text-muted-foreground">contact@prinzadvisory.online</p>
+                    <p className="text-muted-foreground">contact@prinzadvisory.co.in</p>
                   </div>
                 </div>
 
